@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>HAPPY TALK</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Work+Sans:wght@200;400&display=swap" rel="stylesheet"/>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: linear-gradient(to right, #004d4d, #004d4d);
+        }
+        .ipad-wrap {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1003;
+        }
+        :root {
+            --sizeVar: 95vmin;
+        }
+        .ipadBox {
+            position: relative;
+            width: var(--sizeVar);
+            height: calc(var(--sizeVar) * 0.77);
+            background-color: #121212;
+            border-radius: calc(var(--sizeVar) / 24);
+            box-shadow: 0 0 0 calc(var(--sizeVar) / 200) #9d9ea0;
+        }
+        .ipadBox::before,
+        .ipadBox::after {
+            content: "";
+            position: absolute;
+            width: 4%;
+            height: 1%;
+            left: 6%;
+            top: -1.2%;
+            border-radius: calc(var(--sizeVar) / 24) calc(var(--sizeVar) / 24) 0 0;
+            background-color: #8a8a8a;
+            z-index: -1;
+        }
+        .ipadBox::after {
+            left: 11%;
+        }
+        .powerButton {
+            position: absolute;
+            width: fit-content;
+            height: 7%;
+            left: -1.5vmin;
+            top: 5%;
+            padding: 0;
+            padding-right: 0.5vmin;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            color: transparent;
+            border-radius: calc(var(--sizeVar) / 24) 0 0 calc(var(--sizeVar) / 24);
+            background-color: #8a8a8a;
+            z-index: -1;
+        }
+        .powerButton::after {
+            content: "";
+            position: absolute;
+            width: 200%;
+            height: 150%;
+            top: -25%;
+            left: -100%;
+        }
+        .ipadScreen {
+            position: absolute;
+            width: 95%;
+            height: 93.6%;
+            top: 3.2%;
+            left: 2.5%;
+            border-radius: calc(var(--sizeVar) / 40);
+            background-color: #aaaaaa;
+            overflow: hidden;
+            opacity: 0;
+            transition: opacity 300ms linear;
+        }
+        .wallpaper {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: url("https://assets.codepen.io/2722301/bg.jpg");
+            background-size: cover;
+            background-position: center;
+        }
+        .lockScreen {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            cursor: pointer;
+            transition: top 800ms ease-in, backdrop-filter 200ms ease-in;
+            background: rgba(0, 0, 0, 0.5);
+        }
+        .lockScreen.hidden {
+            top: -110%;
+            backdrop-filter: blur(0);
+        }
+        .lockContent {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+        .statusBar {
+            width: 100%;
+            height: 3%;
+            background-image: url("https://assets.codepen.io/2722301/status.png");
+            background-position: right;
+            background-size: 11.6%;
+            background-repeat: no-repeat;
+        }
+        .lockIcon {
+            width: 100%;
+            height: 5%;
+            background-image: url("https://assets.codepen.io/2722301/lock.png");
+            background-position: center;
+            background-size: contain;
+            background-repeat: no-repeat;
+        }
+        .lockTime {
+            font-family: "Work Sans", sans-serif;
+            font-weight: 200;
+            font-size: calc(var(--sizeVar) / 46);
+            color: white;
+            text-align: center;
+            line-height: 250%;
+            margin-top: 3%;
+        }
+        .lockTime::first-line {
+            font-size: calc(var(--sizeVar) / 10.5);
+        }
+        .widget-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: calc(var(--sizeVar) / 80);
+            margin-top: calc(var(--sizeVar) / 40);
+            width: 80%;
+        }
+        .widget {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: calc(var(--sizeVar) / 80);
+            padding: calc(var(--sizeVar) / 80);
+            width: calc(var(--sizeVar) / 6);
+            color: white;
+            text-align: center;
+            font-family: "Work Sans", sans-serif;
+            font-size: calc(var(--sizeVar) / 60);
+        }
+        .weather-widget img {
+            width: calc(var(--sizeVar) / 16);
+            height: calc(var(--sizeVar) / 16);
+        }
+        .interactionBar {
+            position: absolute;
+            bottom: -8%;
+            height: 3%;
+            width: 100%;
+            transition: bottom 800ms ease-in;
+        }
+        .lockScreen .interactionBar {
+            bottom: 0;
+        }
+        .interactionBar::after {
+            content: "";
+            position: absolute;
+            width: 28%;
+            height: 30%;
+            top: 0;
+            margin-left: 36%;
+            border-radius: 100px;
+            background-color: white;
+        }
+        .lockScreen .interactionBar::after {
+            animation: interactionAnim 8000ms ease-in infinite;
+        }
+        .lockScreen .interactionBar::before {
+            position: absolute;
+            width: 100%;
+            top: -140%;
+            text-align: center;
+            color: white;
+            content: "swipe up to open";
+            font-size: calc(var(--sizeVar) / 46);
+            font-family: "Work Sans", sans-serif;
+            font-weight: 200;
+            animation: interTextAnim 8000ms ease-in infinite;
+        }
+        .appGrid {
+            position: absolute;
+            top: 5%;
+            left: 5%;
+            width: 90%;
+            height: 80%;
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: calc(var(--sizeVar) / 30);
+            opacity: 0;
+            transition: opacity 400ms ease-in-out;
+            padding-bottom: 20px;
+            overflow-y: auto;
+        }
+        .appGrid.show {
+            opacity: 1;
+        }
+        .logo {
+            text-align: center;
+            width: calc(var(--sizeVar) / 10);
+            cursor: pointer;
+        }
+        .logo img,
+        .logo svg {
+            width: 100%;
+            height: auto;
+            border-radius: calc(var(--sizeVar) / 80);
+            transition: transform 0.2s;
+        }
+        .logo img:hover,
+        .logo svg:hover {
+            transform: scale(1.1);
+        }
+        .logo p {
+            margin: 5px 0 0;
+            font-family: "Work Sans", sans-serif;
+            font-size: calc(var(--sizeVar) / 60);
+            color: white;
+            text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+        }
+        .dock {
+            position: absolute;
+            bottom: 2%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 5px 10px;
+            display: none;
+            gap: 10px;
+            z-index: 1004;
+        }
+        .dock.show {
+            display: flex;
+        }
+        .dock-button {
+            background: none;
+            border: none;
+            color: white;
+            font-size: calc(var(--sizeVar) / 40);
+            cursor: pointer;
+            padding: 5px;
+            transition: transform 0.2s;
+        }
+        .dock-button:hover {
+            transform: scale(1.2);
+        }
+        .youtube-container,
+        .games-container,
+        .social-container,
+        .watchparty-container,
+        .device-switcher-container {
+            background: #181818;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+        }
+        .youtube-container.active,
+        .games-container.active,
+        .social-container.active,
+        .watchparty-container.active,
+        .device-switcher-container.active {
+            display: block;
+        }
+        .youtube-header,
+        .games-header,
+        .social-header,
+        .watchparty-header,
+        .device-switcher-header {
+            padding: 10px;
+            background: #282828;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .youtube-search,
+        .games-search,
+        .social-search,
+        .watchparty-search,
+        .device-switcher-search {
+            flex-grow: 1;
+            margin: 0 10px;
+        }
+        .youtube-search input,
+        .games-search input,
+        .social-search input,
+        .watchparty-search input,
+        .device-switcher-search input {
+            width: 100%;
+            padding: 5px;
+            border-radius: 5px;
+            background: #121212;
+            color: #fff;
+            border: none;
+            font-size: calc(var(--sizeVar) / 60);
+        }
+        .youtube-content,
+        .games-content,
+        .social-content,
+        .watchparty-content,
+        .device-switcher-content {
+            padding: 10px;
+            overflow-y: auto;
+            height: calc(100% - 60px);
+        }
+        .sub-grid {
+            display: none;
+            grid-template-columns: repeat(6, 1fr);
+            gap: calc(var(--sizeVar) / 30);
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            width: 100%;
+            height: calc(100% - 60px);
+            overflow-y: auto;
+        }
+        .sub-grid.active {
+            display: grid;
+        }
+        .device-button {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 5px;
+            padding: calc(var(--sizeVar) / 80) calc(var(--sizeVar) / 40);
+            color: #FFFFFF;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: calc(var(--sizeVar) / 80);
+            font-size: calc(var(--sizeVar) / 60);
+        }
+        .device-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        .device-button.active {
+            background: rgba(255, 255, 255, 0.5);
+        }
+        .interactionBar#inAppBar {
+            cursor: pointer;
+            bottom: -8%;
+            pointer-events: none;
+        }
+        .interactionBar#inAppBar.active {
+            bottom: 0;
+            pointer-events: all;
+        }
+        .search-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            display: none;
+            z-index: 1005;
+        }
+        .search-bar.active {
+            display: block;
+        }
+        .search-bar input {
+            width: 100%;
+            padding: 8px;
+            border-radius: 5px;
+            background: #121212;
+            color: #fff;
+            border: none;
+            font-size: calc(var(--sizeVar) / 50);
+        }
+        @keyframes interactionAnim {
+            0% { top: 0; }
+            70% { top: 0; }
+            80% { top: -50%; }
+            92% { top: 0; }
+            100% { top: 0; }
+        }
+        @keyframes interTextAnim {
+            0% { top: -100%; opacity: 0; }
+            70% { top: -100%; opacity: 0; }
+            80% { top: -200%; opacity: 1; }
+            90% { top: -200%; opacity: 1; }
+            100% { top: -200%; opacity: 0; }
+        }
+    </style>
+</head>
+<body onload="checkTime();">
+    <div class="ipad-wrap" id="ipad-wrap">
+        <div class="ipadBox" id="ipadBox">
+            <button class="powerButton" onclick="powerMe();">I</button>
+            <div class="ipadScreen" id="ipadScreen">
+                <div class="wallpaper">
+                    <div class="statusBar"></div>
+                    <div class="search-bar" id="search-bar">
+                        <input id="app-search-input" placeholder="Search Apps" type="text"/>
+                    </div>
+                    <div class="appGrid" id="appGrid">
+                        <!-- YouTube -->
+                        <div class="logo" id="youtube-app">
+                            <img src="https://img.icons8.com/?size=100&id=19318&format=png&color=000000" alt="YouTube">
+                            <p>YouTube</p>
+                        </div>
+                        <!-- Games Folder -->
+                        <div class="logo" id="games-app">
+                            <svg viewBox="0 0 100 100">
+                                <rect x="20" y="30" width="60" height="40" rx="5" fill="#333333" />
+                                <rect x="15" y="40" width="5" height="20" rx="2" fill="#222222" />
+                                <rect x="80" y="40" width="5" height="20" rx="2" fill="#222222" />
+                                <circle cx="35" cy="50" r="10" fill="#444444" stroke="#555555" stroke-width="1" />
+                                <circle cx="35" cy="50" r="5" fill="#ff3e3e" />
+                                <circle cx="65" cy="40" r="5" fill="#00aaff" />
+                                <circle cx="75" cy="50" r="5" fill="#55dd55" />
+                                <circle cx="65" cy="60" r="5" fill="#ffdd00" />
+                                <circle cx="55" cy="50" r="5" fill="#ff55ff" />
+                                <rect x="27.5" y="75" width="15" height="5" rx="1" fill="#555555" />
+                                <rect x="32.5" y="70" width="5" height="15" rx="1" fill="#555555" />
+                                <rect x="55" y="75" width="8" height="3" rx="1.5" fill="#666666" />
+                                <rect x="67" y="75" width="8" height="3" rx="1.5" fill="#666666" />
+                            </svg>
+                            <p>Games</p>
+                        </div>
+                        <!-- Social Folder -->
+                        <div class="logo" id="social-app">
+                            <svg viewBox="0 0 64 64">
+                                <circle cx="32" cy="32" r="28" fill="#ffb347"/>
+                                <circle cx="24" cy="32" r="8" fill="#fff"/>
+                                <circle cx="40" cy="32" r="8" fill="#fff"/>
+                                <ellipse cx="32" cy="44" rx="14" ry="6" fill="#fff" opacity="0.7"/>
+                                <circle cx="24" cy="32" r="3" fill="#ffb347"/>
+                                <circle cx="40" cy="32" r="3" fill="#ffb347"/>
+                            </svg>
+                            <p>Social</p>
+                        </div>
+                        <!-- Watch Party Folder -->
+                        <div class="logo" id="watchparty-app">
+                            <svg viewBox="0 0 64 64">
+                                <circle cx="32" cy="32" r="28" fill="#ffb347"/>
+                                <polygon points="28,22 46,32 28,42" fill="#fff"/>
+                                <circle cx="20" cy="46" r="4" fill="#fff"/>
+                                <circle cx="44" cy="46" r="4" fill="#fff"/>
+                                <ellipse cx="32" cy="52" rx="12" ry="3" fill="#fff" opacity="0.6"/>
+                            </svg>
+                            <p>Watch Party</p>
+                        </div>
+                        <!-- Device Switcher -->
+                        <div class="logo" id="device-switcher-app">
+                            <svg viewBox="0 0 64 64">
+                                <rect x="10" y="14" width="44" height="36" rx="4" fill="#fff" stroke="#333" stroke-width="2"/>
+                                <rect x="14" y="18" width="36" height="28" rx="2" fill="#e3f2fd"/>
+                                <rect x="40" y="38" width="8" height="2" fill="#1976d2"/>
+                                <rect x="18" y="26" width="18" height="2" fill="#1976d2"/>
+                                <rect x="18" y="30" width="10" height="2" fill="#1976d2"/>
+                            </svg>
+                            <p>Device Switcher</p>
+                        </div>
+                        <!-- Social Media Apps -->
+                        <div class="logo" onclick="window.open('https://www.instagram.com', '_blank')">
+                            <img src="https://img.icons8.com/?size=100&id=BrU2BBoRXiWq&format=png&color=000000" alt="Instagram">
+                            <p>Instagram</p>
+                        </div>
+                        <div class="logo" onclick="window.open('https://x.com', '_blank')">
+                            <img src="https://img.icons8.com/?size=100&id=phOKFKYpe00C&format=png&color=000000" alt="X">
+                            <p>X</p>
+                        </div>
+                        <div class="logo" onclick="window.open('https://www.facebook.com', '_blank')">
+                            <img src="https://img.icons8.com/?size=100&id=118497&format=png&color=000000" alt="Facebook">
+                            <p>Facebook</p>
+                        </div>
+                        <div class="logo" onclick="window.open('https://www.tiktok.com', '_blank')">
+                            <img src="https://img.icons8.com/?size=100&id=118638&format=png&color=000000" alt="TikTok">
+                            <p>TikTok</p>
+                        </div>
+                        <div class="logo" onclick="window.open('https://www.pinterest.com', '_blank')">
+                            <img src="https://img.icons8.com/?size=100&id=63676&format=png&color=000000" alt="Pinterest">
+                            <p>Pinterest</p>
+                        </div>
+                        <div class="logo" onclick="window.open('https://www.linkedin.com', '_blank')">
+                            <img src="https://img.icons8.com/?size=100&id=xuvGCOXi8Wyg&format=png&color=000000" alt="LinkedIn">
+                            <p>LinkedIn</p>
+                        </div>
+                        <div class="logo" onclick="window.open('https://www.quora.com', '_blank')">
+                            <img src="https://img.icons8.com/?size=100&id=wPcChHypTdti&format=png&color=000000" alt="Quora">
+                            <p>Quora</p>
+                        </div>
+                        <div class="logo" onclick="window.open('https://www.reddit.com', '_blank')">
+                            <img src="https://img.icons8.com/?size=100&id=FLisMqR76b1i&format=png&color=000000" alt="Reddit">
+                            <p>Reddit</p>
+                        </div>
+                        <!-- Google Apps -->
+                        <div class="logo" onclick="window.open('https://www.google.com', '_blank')">
+                            <img src="https://img.icons8.com/?size=100&id=17949&format=png&color=000000" alt="Google">
+                            <p>Google</p>
+                        </div>
+                        <div class="logo" onclick="window.open('https://www.google.com/chrome', '_blank')">
+                            <img src="https://img.icons8.com/?size=100&id=63785&format=png&color=000000" alt="Chrome">
+                            <p>Chrome</p>
+                        </div>
+                        <div class="logo" onclick="window.open('https://maps.google.com', '_blank')">
+                            <img src="https://img.icons8.com/?size=100&id=DcygmpZqBEd9&format=png&color=000000" alt="Google Maps">
+                            <p>Google Maps</p>
+                        </div>
+                        <div class="logo" onclick="window.open('https://docs.google.com', '_blank')">
+                            <img src="https://img.icons8.com/?size=100&id=30464&format=png&color=000000" alt="Google Docs">
+                            <p>Google Docs</p>
+                        </div>
+                        <div class="logo" onclick="window.open('https://mail.google.com', '_blank')">
+                            <img src="https://img.icons8.com/?size=100&id=qyRpAggnV0zH&format=png&color=000000" alt="Gmail">
+                            <p>Gmail</p>
+                        </div>
+                        <div class="logo" onclick="window.open('https://pay.google.com', '_blank')">
+                            <img src="https://img.icons8.com/?size=100&id=d3FdjviJ7gNe&format=png&color=000000" alt="Google Pay">
+                            <p>Google Pay</p>
+                        </div>
+                        <!-- Other Apps -->
+                        <div class="logo" onclick="window.open('https://www.amazon.com', '_blank')">
+                            <img src="https://img.icons8.com/?size=100&id=21295&format=png&color=000000" alt="Amazon">
+                            <p>Amazon</p>
+                        </div>
+                        <div class="logo" onclick="window.open('https://www.spotify.com', '_blank')">
+                            <img src="https://img.icons8.com/?size=100&id=8sVH9rG7jLxH&format=png&color=000000" alt="Spotify">
+                            <p>Spotify</p>
+                        </div>
+                        <div class="logo" onclick="window.open('https://www.netflix.com', '_blank')">
+                            <img src="https://img.icons8.com/?size=100&id=2kF8XHu1TKjL&format=png&color=000000" alt="Netflix">
+                            <p>Netflix</p>
+                        </div>
+                        <div class="logo" onclick="window.open('https://www.whatsapp.com', '_blank')">
+                            <img src="https://img.icons8.com/?size=100&id=16712&format=png&color=000000" alt="WhatsApp">
+                            <p>WhatsApp</p>
+                        </div>
+                        <div class="logo" onclick="window.open('https://www.snapchat.com', '_blank')">
+                            <img src="https://img.icons8.com/?size=100&id=30469&format=png&color=000000" alt="Snapchat">
+                            <p>Snapchat</p>
+                        </div>
+                        <div class="logo" onclick="window.open('https://www.microsoft.com/teams', '_blank')">
+                            <img src="https://img.icons8.com/?size=100&id=4YudOaB6Ez5y&format=png&color=000000" alt="Microsoft Teams">
+                            <p>Teams</p>
+                        </div>
+                        <div class="logo" onclick="window.open('https://www.zoom.us', '_blank')">
+                            <img src="https://img.icons8.com/?size=100&id=ZFrYq9x5aE2N&format=png&color=000000" alt="Zoom">
+                            <p>Zoom</p>
+                        </div>
+                        <div class="logo" onclick="window.open('https://www.canva.com', '_blank')">
+                            <img src="https://img.icons8.com/?size=100&id=13664&format=png&color=000000" alt="Canva">
+                            <p>Canva</p>
+                        </div>
+                        <div class="logo" onclick="window.open('https://www.slack.com', '_blank')">
+                            <img src="https://img.icons8.com/?size=100&id=49092&format=png&color=000000" alt="Slack">
+                            <p>Slack</p>
+                        </div>
+                        <div class="logo" onclick="window.open('https://www.dropbox.com', '_blank')">
+                            <img src="https://img.icons8.com/?size=100&id=13657&format=png&color=000000" alt="Dropbox">
+                            <p>Dropbox</p>
+                        </div>
+                        <div class="logo" onclick="window.open('https://www.notion.so', '_blank')">
+                            <img src="https://img.icons8.com/?size=100&id=114098&format=png&color=000000" alt="Notion">
+                            <p>Notion</p>
+                        </div>
+                    </div>
+                    <!-- YouTube Container -->
+                    <div class="youtube-container" id="youtube-container">
+                        <div class="youtube-header">
+                            <i class="fab fa-youtube text-red-600 text-2xl"></i>
+                            <div class="youtube-search">
+                                <input id="youtube-search-input" placeholder="Search YouTube" type="text"/>
+                            </div>
+                            <button id="youtube-search-button" class="text-white"><i class="fas fa-search"></i></button>
+                        </div>
+                        <div class="youtube-content">
+                            <div id="youtube-video-player" class="mb-4">
+                                <iframe id="youtube-iframe" src="" allowfullscreen class="hidden w-full h-96"></iframe>
+                            </div>
+                            <div id="youtube-video-list" class="grid grid-cols-2 gap-4"></div>
+                        </div>
+                    </div>
+                    <!-- Games Container -->
+                    <div class="games-container" id="games-container">
+                        <div class="games-header">
+                            <i class="fas fa-gamepad text-green-600 text-2xl"></i>
+                            <div class="games-search">
+                                <input id="games-search-input" placeholder="Search Games" type="text"/>
+                            </div>
+                            <button id="games-search-button" class="text-white"><i class="fas fa-search"></i></button>
+                        </div>
+                        <div class="games-content">
+                            <div id="games-list" class="sub-grid">
+                                <div class="logo" onclick="window.open('https://www.miniclip.com', '_blank')">
+                                    <img src="https://img.icons8.com/?size=100&id=GdTfmvoroqDq&format=png&color=000000" alt="Miniclip">
+                                    <p>Miniclip</p>
+                                </div>
+                                <div class="logo" onclick="window.open('https://www.crazygames.com/multiplayer', '_blank')">
+                                    <svg viewBox="0 0 64 64">
+                                        <circle cx="32" cy="32" r="28" fill="#ff6f61"/>
+                                        <polygon points="32,16 48,48 16,48" fill="#fff"/>
+                                        <circle cx="32" cy="36" r="5" fill="#ff6f61"/>
+                                    </svg>
+                                    <p>CrazyGames</p>
+                                </div>
+                                <div class="logo" onclick="window.open('http://poki.com/en/multiplayer', '_blank')">
+                                    <svg viewBox="0 0 64 64">
+                                        <rect x="10" y="20" width="44" height="24" rx="12" fill="#4f8cff"/>
+                                        <circle cx="32" cy="32" r="8" fill="#fff"/>
+                                    </svg>
+                                    <p>Poki</p>
+                                </div>
+                                <div class="logo" onclick="window.open('https://www.onlinegames.io/t/multiplayer/', '_blank')">
+                                    <svg viewBox="0 0 64 64">
+                                        <rect x="14" y="14" width="36" height="36" rx="8" fill="#ffd600"/>
+                                        <circle cx="32" cy="32" r="12" fill="#fff"/>
+                                        <rect x="28" y="28" width="8" height="8" fill="#ffd600"/>
+                                    </svg>
+                                    <p>OnlineGames.io</p>
+                                </div>
+                                <div class="logo" onclick="window.open('https://www.miniplay.com/multiplayer', '_blank')">
+                                    <svg viewBox="0 0 64 64">
+                                        <circle cx="32" cy="32" r="28" fill="#00bfae"/>
+                                        <rect x="24" y="24" width="16" height="16" rx="4" fill="#fff"/>
+                                        <circle cx="32" cy="32" r="4" fill="#00bfae"/>
+                                    </svg>
+                                    <p>Miniplay</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Social Container -->
+                    <div class="social-container" id="social-container">
+                        <div class="social-header">
+                            <i class="fas fa-users text-orange-600 text-2xl"></i>
+                            <div class="social-search">
+                                <input id="social-search-input" placeholder="Search Social" type="text"/>
+                            </div>
+                            <button id="social-search-button" class="text-white"><i class="fas fa-search"></i></button>
+                        </div>
+                        <div class="social-content">
+                            <div id="social-list" class="grid grid-cols-2 gap-4">
+                                <p class="text-white text-center">Social search not implemented</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Watch Party Container -->
+                    <div class="watchparty-container" id="watchparty-container">
+                        <div class="watchparty-header">
+                            <i class="fas fa-video text-blue-600 text-2xl"></i>
+                            <div class="watchparty-search">
+                                <input id="watchparty-search-input" placeholder="Search Watch Party" type="text"/>
+                            </div>
+                            <button id="watchparty-search-button" class="text-white"><i class="fas fa-search"></i></button>
+                        </div>
+                        <div class="watchparty-content">
+                            <div id="watchparty-list" class="sub-grid">
+                                <div class="logo" onclick="window.open('https://ted.com', '_blank')">
+                                    <svg viewBox="0 0 64 64">
+                                        <rect x="12" y="24" width="40" height="16" rx="8" fill="#e62b1e"/>
+                                        <text x="32" y="36" font-size="16" fill="#fff" font-family="Arial" text-anchor="middle">TED</text>
+                                    </svg>
+                                    <p>TED</p>
+                                </div>
+                                <div class="logo" onclick="window.open('https://primevideo.com', '_blank')">
+                                    <svg viewBox="0 0 64 64">
+                                        <ellipse cx="32" cy="32" rx="24" ry="16" fill="#00a8e1"/>
+                                        <polygon points="32,24 44,32 32,40" fill="#fff"/>
+                                    </svg>
+                                    <p>Amazon Prime Video</p>
+                                </div>
+                                <div class="logo" onclick="window.open('https://disneyplus.com', '_blank')">
+                                    <svg viewBox="0 0 64 64">
+                                        <ellipse cx="32" cy="32" rx="24" ry="16" fill="#113ccf"/>
+                                        <rect x="24" y="28" width="16" height="8" rx="4" fill="#fff"/>
+                                    </svg>
+                                    <p>Disney+</p>
+                                </div>
+                                <div class="logo" onclick="window.open('https://hulu.com', '_blank')">
+                                    <svg viewBox="0 0 64 64">
+                                        <rect x="16" y="16" width="32" height="32" rx="8" fill="#1ce783"/>
+                                        <rect x="24" y="28" width="16" height="8" rx="4" fill="#fff"/>
+                                    </svg>
+                                    <p>Hulu</p>
+                                </div>
+                                <div class="logo" onclick="window.open('https://tv.apple.com', '_blank')">
+                                    <svg viewBox="0 0 64 64">
+                                        <ellipse cx="32" cy="32" rx="24" ry="16" fill="#000"/>
+                                        <rect x="28" y="28" width="8" height="8" fill="#fff"/>
+                                    </svg>
+                                    <p>Apple TV+</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Device Switcher Container -->
+                    <div class="device-switcher-container" id="device-switcher-container">
+                        <div class="device-switcher-header">
+                            <i class="fas fa-desktop text-purple-600 text-2xl"></i>
+                            <div class="device-switcher-search">
+                                <input id="device-switcher-search-input" placeholder="Search Devices" type="text" disabled/>
+                            </div>
+                            <button id="device-switcher-search-button" class="text-white" disabled><i class="fas fa-search"></i></button>
+                        </div>
+                        <div class="device-switcher-content">
+                            <button class="device-button active" onclick="switchDevice('tablet')">Tablet</button>
+                            <button class="device-button" onclick="switchDevice('pc')">PC</button>
+                            <button class="device-button" onclick="switchDevice('phone')">Phone</button>
+                        </div>
+                    </div>
+                    <!-- Dock -->
+                    <div class="dock" id="dock">
+                        <button class="dock-button" onclick="goHome()"><i class="fas fa-home"></i></button>
+                        <button class="dock-button" onclick="openSearch()"><i class="fas fa-search"></i></button>
+                        <button class="dock-button" onclick="switchDevice('phone')"><i class="fas fa-mobile-alt"></i></button>
+                        <button class="dock-button" onclick="switchDevice('tablet')"><i class="fas fa-tablet-alt"></i></button>
+                        <button class="dock-button" onclick="switchDevice('pc')"><i class="fas fa-desktop"></i></button>
+                        <button class="dock-button" onclick="goBack()"><i class="fas fa-arrow-left"></i></button>
+                    </div>
+                </div>
+                <div class="lockScreen" id="lockScreen">
+                    <div class="lockContent">
+                        <div class="statusBar"></div>
+                        <div class="lockIcon"></div>
+                        <div class="lockTime" id="lock-time">9:41<br />Apr 21, 2025</div>
+                        <div class="widget-container">
+                            <div class="widget time-widget">
+                                <h3>Time</h3>
+                                <p id="widget-time">9:41 AM</p>
+                            </div>
+                            <div class="widget weather-widget">
+                                <h3>Weather</h3>
+                                <img src="https://img.icons8.com/color/48/000000/partly-cloudy-day.png" alt="Weather">
+                                <p>25°C, Partly Cloudy</p>
+                            </div>
+                            <div class="widget calendar-widget">
+                                <h3>Calendar</h3>
+                                <p>Apr 21, 2025</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="interactionBar"></div>
+                </div>
+                <div class="interactionBar" id="inAppBar"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // YouTube API Key (Replace with your own if needed)
+        const API_KEY = 'AIzaSyAsQ7E02xCW3qAdxwHK2PLj-pppMfm9fBw';
+
+        // DOM Elements
+        const ipadScreen = document.getElementById('ipadScreen');
+        const appGrid = document.getElementById('appGrid');
+        const dock = document.getElementById('dock');
+        const lockScreen = document.getElementById('lockScreen');
+        const inAppBar = document.getElementById('inAppBar');
+        const searchBar = document.getElementById('search-bar');
+        const appSearchInput = document.getElementById('app-search-input');
+        const youtubeApp = document.getElementById('youtube-app');
+        const gamesApp = document.getElementById('games-app');
+        const socialApp = document.getElementById('social-app');
+        const watchpartyApp = document.getElementById('watchparty-app');
+        const deviceSwitcherApp = document.getElementById('device-switcher-app');
+        const youtubeContainer = document.getElementById('youtube-container');
+        const gamesContainer = document.getElementById('games-container');
+        const socialContainer = document.getElementById('social-container');
+        const watchpartyContainer = document.getElementById('watchparty-container');
+        const deviceSwitcherContainer = document.getElementById('device-switcher-container');
+        const youtubeSearchButton = document.getElementById('youtube-search-button');
+        const gamesSearchButton = document.getElementById('games-search-button');
+        const socialSearchButton = document.getElementById('social-search-button');
+        const watchpartySearchButton = document.getElementById('watchparty-search-button');
+        const youtubeSearchInput = document.getElementById('youtube-search-input');
+        const gamesSearchInput = document.getElementById('games-search-input');
+        const socialSearchInput = document.getElementById('social-search-input');
+        const watchpartySearchInput = document.getElementById('watchparty-search-input');
+
+        let powerVar = 0;
+
+        // Lock Screen Interaction
+        function lockClick() {
+            lockScreen.style.backdropFilter = 'blur(2vh) brightness(1.2)';
+            lockScreen.classList.add('hidden');
+            appGrid.classList.add('show');
+            dock.classList.add('show');
+        }
+
+        // Power Button Toggle
+        function powerMe() {
+            inAppBar.style.bottom = '-8%';
+            inAppBar.style.pointerEvents = 'none';
+            inAppBar.classList.remove('active');
+            searchBar.classList.remove('active');
+            appSearchInput.value = '';
+            searchApps('');
+            if (powerVar === 1) {
+                ipadScreen.style.opacity = '1';
+                ipadScreen.style.pointerEvents = 'all';
+                powerVar = 0;
+                lockScreen.style.transition = 'top 800ms ease-in, backdrop-filter 200ms ease-in';
+                appGrid.style.transition = 'opacity 400ms ease-in-out';
+            } else {
+                ipadScreen.style.opacity = '0';
+                ipadScreen.style.pointerEvents = 'none';
+                powerVar = 1;
+                setTimeout(() => {
+                    lockScreen.style.transition = 'none';
+                    appGrid.style.transition = 'none';
+                    lockScreen.style.backdropFilter = 'blur(0)';
+                    lockScreen.classList.remove('hidden');
+                    appGrid.classList.remove('show');
+                    dock.classList.remove('show');
+                    [youtubeContainer, gamesContainer, socialContainer, watchpartyContainer, deviceSwitcherContainer].forEach(container => {
+                        container.classList.remove('active');
+                        const subGrid = container.querySelector('.sub-grid');
+                        if (subGrid) subGrid.classList.remove('active');
+                    });
+                }, 300);
+            }
+        }
+
+        // Open App
+        function openApp(container) {
+            appGrid.classList.remove('show');
+            container.classList.add('active');
+            inAppBar.style.bottom = '0';
+            inAppBar.style.pointerEvents = 'all';
+            inAppBar.classList.add('active');
+            dock.classList.add('show');
+            searchBar.classList.remove('active');
+            appSearchInput.value = '';
+            searchApps('');
+            if (container === gamesContainer || container === watchpartyContainer) {
+                container.querySelector('.sub-grid').classList.add('active');
+            }
+        }
+
+        // Close App
+        function closeApp(container) {
+            container.classList.remove('active');
+            appGrid.classList.add('show');
+            inAppBar.style.bottom = '-8%';
+            inAppBar.style.pointerEvents = 'none';
+            inAppBar.classList.remove('active');
+            dock.classList.add('show');
+            searchBar.classList.remove('active');
+            appSearchInput.value = '';
+            searchApps('');
+            const subGrid = container.querySelector('.sub-grid');
+            if (subGrid) subGrid.classList.remove('active');
+        }
+
+        // Event Listeners for Apps
+        youtubeApp.addEventListener('click', () => openApp(youtubeContainer));
+        gamesApp.addEventListener('click', () => openApp(gamesContainer));
+        socialApp.addEventListener('click', () => openApp(socialContainer));
+        watchpartyApp.addEventListener('click', () => openApp(watchpartyContainer));
+        deviceSwitcherApp.addEventListener('click', () => openApp(deviceSwitcherContainer));
+
+        // Back Button
+        function goBack() {
+            const activeContainer = [youtubeContainer, gamesContainer, socialContainer, watchpartyContainer, deviceSwitcherContainer].find(container => container.classList.contains('active'));
+            if (activeContainer) {
+                closeApp(activeContainer);
+            }
+        }
+
+        // Search Bar Toggle
+        function openSearch() {
+            searchBar.classList.toggle('active');
+            appSearchInput.focus();
+            if (!searchBar.classList.contains('active')) {
+                appSearchInput.value = '';
+                searchApps('');
+            }
+        }
+
+        // App Search
+        appSearchInput.addEventListener('input', () => {
+            searchApps(appSearchInput.value);
+        });
+
+        function searchApps(query) {
+            const logos = appGrid.querySelectorAll('.logo');
+            logos.forEach(logo => {
+                const title = logo.querySelector('p').textContent.toLowerCase();
+                logo.style.display = title.includes(query.toLowerCase()) ? 'block' : 'none';
+            });
+        }
+
+        // YouTube Search
+        youtubeSearchButton.addEventListener('click', () => {
+            searchYouTube(youtubeSearchInput.value);
+        });
+
+        youtubeSearchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                searchYouTube(youtubeSearchInput.value);
+            }
+        });
+
+        function searchYouTube(query) {
+            if (!query.trim()) return;
+            const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&q=${encodeURIComponent(query)}&key=${API_KEY}`;
+            const videoList = document.getElementById('youtube-video-list');
+            const iframe = document.getElementById('youtube-iframe');
+
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return response.json();
+                })
+                .then(data => {
+                    videoList.innerHTML = '';
+                    if (!data.items || data.items.length === 0) {
+                        videoList.innerHTML = '<p class="text-white text-center">No results found</p>';
+                        return;
+                    }
+                    data.items.forEach(item => {
+                        const videoItem = document.createElement('div');
+                        videoItem.className = 'bg-gray-700 rounded-lg overflow-hidden cursor-pointer';
+                        videoItem.innerHTML = `
+                            <img src="${item.snippet.thumbnails.medium.url}" alt="${item.snippet.title}" class="w-full"/>
+                            <div class="p-2">
+                                <h3 class="font-bold text-sm text-white">${item.snippet.title}</h3>
+                                <p class="text-gray-400 text-xs">${item.snippet.channelTitle}</p>
+                            </div>
+                        `;
+                        videoItem.addEventListener('click', () => {
+                            iframe.src = `https://www.youtube.com/embed/${item.id.videoId}?autoplay=1`;
+                            iframe.classList.remove('hidden');
+                        });
+                        videoList.appendChild(videoItem);
+                    });
+                })
+                .catch(error => {
+                    console.error('YouTube API error:', error);
+                    videoList.innerHTML = '<p class="text-white text-center">Error fetching videos</p>';
+                });
+        }
+
+        // Games Search
+        gamesSearchButton.addEventListener('click', () => {
+            searchGames(gamesSearchInput.value);
+        });
+
+        gamesSearchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                searchGames(gamesSearchInput.value);
+            }
+        });
+
+        function searchGames(query) {
+            const gamesList = document.getElementById('games-list');
+            const logos = gamesList.querySelectorAll('.logo');
+            logos.forEach(logo => {
+                const title = logo.querySelector('p').textContent.toLowerCase();
+                logo.style.display = title.includes(query.toLowerCase()) ? 'block' : 'none';
+            });
+        }
+
+        // Social Search
+        socialSearchButton.addEventListener('click', () => {
+            searchSocial(socialSearchInput.value);
+        });
+
+        socialSearchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                searchSocial(socialSearchInput.value);
+            }
+        });
+
+        function searchSocial(query) {
+            const socialList = document.getElementById('social-list');
+            socialList.innerHTML = '<p class="text-white text-center">Social search not implemented</p>';
+        }
+
+        // Watch Party Search
+        watchpartySearchButton.addEventListener('click', () => {
+            searchWatchparty(watchpartySearchInput.value);
+        });
+
+        watchpartySearchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                searchWatchparty(watchpartySearchInput.value);
+            }
+        });
+
+        function searchWatchparty(query) {
+            const watchpartyList = document.getElementById('watchparty-list');
+            const logos = watchpartyList.querySelectorAll('.logo');
+            logos.forEach(logo => {
+                const title = logo.querySelector('p').textContent.toLowerCase();
+                logo.style.display = title.includes(query.toLowerCase()) ? 'block' : 'none';
+            });
+        }
+
+        // Device Switching
+        function switchDevice(device) {
+            const buttons = document.querySelectorAll('.device-button');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            const targetButton = Array.from(buttons).find(btn => btn.textContent.toLowerCase() === device);
+            if (targetButton) targetButton.classList.add('active');
+            if (device === 'pc') {
+                document.documentElement.style.setProperty('--sizeVar', '80vmin');
+            } else if (device === 'phone') {
+                document.documentElement.style.setProperty('--sizeVar', '50vmin');
+            } else {
+                document.documentElement.style.setProperty('--sizeVar', '95vmin');
+            }
+        }
+
+        // Go Home
+        function goHome() {
+            inAppBar.style.bottom = '-8%';
+            inAppBar.style.pointerEvents = 'none';
+            inAppBar.classList.remove('active');
+            appGrid.classList.add('show');
+            dock.classList.add('show');
+            searchBar.classList.remove('active');
+            appSearchInput.value = '';
+            searchApps('');
+            [youtubeContainer, gamesContainer, socialContainer, watchpartyContainer, deviceSwitcherContainer].forEach(container => {
+                container.classList.remove('active');
+                const subGrid = container.querySelector('.sub-grid');
+                if (subGrid) subGrid.classList.remove('active');
+            });
+        }
+
+        // Time Update
+        function checkTime() {
+            const day = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+            const month = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            const d = new Date();
+            const hours = d.getHours();
+            const minutes = d.getMinutes();
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            let displayHours = hours % 12;
+            displayHours = displayHours ? displayHours : 12;
+            const displayMinutes = minutes < 10 ? "0" + minutes : minutes;
+            document.getElementById("lock-time").innerHTML =
+                `${displayHours}:${displayMinutes}<br/>${day[d.getDay()]}, ${month[d.getMonth()]} ${d.getDate()}`;
+            document.getElementById("widget-time").innerHTML = `${displayHours}:${displayMinutes} ${ampm}`;
+            document.getElementById("calendar-widget").innerHTML = `<h3>Calendar</h3><p>${month[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}</p>`;
+            setTimeout(checkTime, 500);
+        }
+
+        // Initialize
+        setTimeout(() => {
+            ipadScreen.style.opacity = '1';
+        }, 1000);
+        lockScreen.classList.remove('hidden');
+        appGrid.classList.remove('show');
+        dock.classList.remove('show');
+        inAppBar.style.bottom = '-8%';
+        inAppBar.style.pointerEvents = 'none';
+        lockScreen.addEventListener('click', lockClick);
+        inAppBar.addEventListener('click', goHome);
+    </script>
+</body>
+</html>
